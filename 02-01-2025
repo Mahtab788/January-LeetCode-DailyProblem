@@ -1,0 +1,26 @@
+#.2559. Count Vowel Strings in Ranges.
+
+class Solution {
+    public int[] vowelStrings(String[] words, int[][] queries) {
+        int n = words.length;
+        int[] prefix = new int[n + 1];
+        int[] result = new int[queries.length];
+
+        // Build the prefix sum array
+        for (int i = 0; i < n; i++) {
+            prefix[i + 1] = prefix[i] + (isVowel(words[i].charAt(0)) && isVowel(words[i].charAt(words[i].length() - 1)) ? 1 : 0);
+        }
+
+        // Answer each query using prefix sum
+        for (int i = 0; i < queries.length; i++) {
+            result[i] = prefix[queries[i][1] + 1] - prefix[queries[i][0]];
+        }
+
+        return result;
+    }
+
+    // Helper function to check if a character is a vowel
+    private boolean isVowel(char c) {
+        return "aeiou".indexOf(c) != -1;
+    }
+}
