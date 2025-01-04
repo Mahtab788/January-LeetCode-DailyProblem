@@ -1,0 +1,34 @@
+#.1930. Unique Length-3 Palindromic Subsequences.
+
+
+class Solution {
+    public int countPalindromicSubsequence(String s) {
+        int n = s.length();
+        boolean[] leftSeen = new boolean[26];
+        int[] rightCount = new int[26];
+        
+        // Count occurrences of each character in the string
+        for (char c : s.toCharArray()) {
+            rightCount[c - 'a']++;
+        }
+        
+        HashSet<String> uniquePalindromes = new HashSet<>();
+        
+        // Iterate through the string with each character as the middle
+        for (int i = 0; i < n; i++) {
+            char middle = s.charAt(i);
+            rightCount[middle - 'a']--;
+            
+            // Check for valid left and right characters to form a palindrome
+            for (int j = 0; j < 26; j++) {
+                if (leftSeen[j] && rightCount[j] > 0) {
+                    uniquePalindromes.add("" + (char) (j + 'a') + middle + (char) (j + 'a'));
+                }
+            }
+            
+            leftSeen[middle - 'a'] = true;
+        }
+        
+        return uniquePalindromes.size();
+    }
+}
