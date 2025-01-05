@@ -1,0 +1,31 @@
+#.2381. Shifting Letters II.
+
+class Solution {
+    public String shiftingLetters(String s, int[][] shifts) {
+        int n = s.length();
+        int[] shift = new int[n + 1]; // Difference array
+
+        // Build the difference array
+        for (int[] sh : shifts) {
+            int start = sh[0], end = sh[1], direction = sh[2];
+            shift[start] += (direction == 1) ? 1 : -1;
+            shift[end + 1] += (direction == 1) ? -1 : 1;
+        }
+
+        // Convert difference array to cumulative shifts
+        int cumulativeShift = 0;
+        char[] result = s.toCharArray();
+        for (int i = 0; i < n; i++) {
+            cumulativeShift += shift[i];
+            result[i] = shiftChar(result[i], cumulativeShift);
+        }
+
+        return new String(result);
+    }
+
+    // Helper function to shift a character with wrapping
+    private char shiftChar(char c, int shift) {
+        int newChar = ((c - 'a') + shift % 26 + 26) % 26 + 'a';
+        return (char) newChar;
+    }
+}
