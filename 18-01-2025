@@ -1,0 +1,51 @@
+#.1368. Minimum Cost to Make at Least One Valid Path in a Grid.
+
+
+class Solution {
+    public int minCost(int[][] grid) {
+        int m = grid.length;
+        int n = grid[0].length;
+
+        // Directions: [right, left, down, up]
+        int[][] directions = {{0, 1}, {0, -1}, {1, 0}, {-1, 0}};
+        
+        // Min-heap priority queue
+        PriorityQueue<int[]> pq = new PriorityQueue<>((a, b) -> a[2] - b[2]); // [x, y, cost]
+        pq.offer(new int[]{0, 0, 0});
+        
+        // Cost array to track minimum cost to reach each cell
+        int[][] cost = new int[m][n];
+        for (int[] row : cost) Arrays.fill(row, Integer.MAX_VALUE);
+        cost[0][0] = 0;
+
+        // BFS with priority queue
+        while (!pq.isEmpty()) {
+            int[] curr = pq.poll();
+            int x = curr[0], y = curr[1], currCost = curr[2];
+            
+            // Stop if we've reached the bottom-right cell
+            if (x == m - 1 && y == n - 1) return currCost;
+            
+            // Explore all four directions
+            for (int dir = 0; dir < 4; dir++) {
+                int newX = x + directions[dir][0];
+                int newY = y + directions[dir][1];
+                
+                // Check if the new cell is within bounds
+                if (newX >= 0 && newX < m && newY >= 0 && newY < n) {
+                    // Calculate the new cost
+                    int newCost = currCost + (grid[x][y] == dir + 1 ? 0 : 1);
+                    
+                    // Update if a cheaper cost is found
+                    if (newCost < cost[newX][newY]) {
+                        cost[newX][newY] = newCost;
+                        pq.offer(new int[]{newX, newY, newCost});
+                    }
+                }
+            }
+        }
+        
+        // Return -1 if unreachable (shouldn't happen with valid inputs)
+        return -1;
+    }
+}
